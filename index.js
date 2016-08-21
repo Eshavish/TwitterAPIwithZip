@@ -33,24 +33,6 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 
 app.use(express.static('public'));
 
-//post to retrieve user data
-app.post('/twitter/user', function (req, res) {
-	var username = req.body.username;
-
-	//Twitter API is called.
-	var data = twitter.getUser({ screen_name: username}, function(error, response, body){
-		res.status(404).send({
-			"error" : "User Not Found"
-		});
-	}, function(data){
-		res.send({
-			result : {
-				"userData" : data
-			}
-		});
-	});
-});
-
 //Get search tweets
 app.post('/twitter/searchTweets', function (req, res) {
 	var searchQuery = req.body.query;

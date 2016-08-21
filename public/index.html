@@ -1,7 +1,8 @@
+<!--THIS IS YOUR VIEW. The V in MVC.-->
 <!DOCTYPE html>
 <html ng-app="myApp">
 <head>
-  <title>Twitter API with Javascript/Node/Express</title>
+  <title>Twitter API get Tweets </title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <!-- Bootstrap -->
   <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" media="screen">
@@ -10,20 +11,19 @@
 <div class="container">
   <div class="row">
     <div class="col-xs-12">
-      <h1 class="text-center">Twitter API with Javascript (node/express)</h1>
+      <h1 class="text-center">Twitter API get Tweets</h1>
     </div>
   </div>
   <div class="row" style="margin-top:50px;">
     <div class="col-xs-12">
-      <input class="form-control" type="text" placeholder="Twitter User Name (e.g. BoyCook)" ng-model="userName">
       <input class="form-control" type="text" placeholder="Your search query (e.g #iPhone)" ng-model="query">
 
       <br>
       <br>
-      <p class="text-center"><button class="btn btn-primary" ng-click="getUser(userName)">Get User</button></p>
       <p class="text-center"><button class="btn btn-primary" ng-click="getSearchTweets(query)">Get Tweets</button></p>
 
     </div>
+
   </div>
   <div class="row" ng-if="twitterErrors">
     <div class="col-xs-12">
