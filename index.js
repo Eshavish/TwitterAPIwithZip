@@ -1,5 +1,6 @@
 module.exports = require('./node_modules/twitter-js-client/lib/Twitter');
 
+var fs = require('fs');
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
@@ -51,6 +52,31 @@ app.post('/twitter/searchTweets', function (req, res) {
 				"searchTweetsData" : data
 			}
 		});
+	});
+});
+
+
+//Save searched tweets
+app.post('/twitter/saveTweets', function (req, res) {
+	var tweets = req.body.results.extractedTweets;
+	var d = new Date();
+	var fileName = d.getDate()  + "-" + (d.getMonth()+1) + "-" + d.getFullYear() + " " +
+		d.getHours() + d.getMinutes() + d.getSeconds() + ".txt";
+	fs.writeFile("/cygwin64/home/savedtweets/" + fileName, tweets, function(err) {
+		if(err) {
+			res.send({
+				result : {
+					"success" : false
+				}
+			});
+		}
+		else {
+			res.send({
+				result : {
+					"success" : true
+				}
+			});
+		}
 	});
 });
 
