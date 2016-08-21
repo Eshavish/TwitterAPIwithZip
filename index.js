@@ -48,7 +48,7 @@ app.post('/twitter/searchTweets', function (req, res) {
 	}, function(data){
 		res.send({
 			result : {
-				"userData" : data
+				"searchTweetsData" : data
 			}
 		});
 	});
