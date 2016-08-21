@@ -16,11 +16,12 @@
   </div>
   <div class="row" style="margin-top:50px;">
     <div class="col-xs-12">
+      <input class="form-control" type="text" placeholder="Your zip code here (e.g #92115)" ng-model="zip">
       <input class="form-control" type="text" placeholder="Your search query (e.g #iPhone)" ng-model="query">
 
       <br>
       <br>
-      <p class="text-center"><button class="btn btn-primary" ng-click="getSearchTweets(query)">Get Tweets</button></p>
+      <p class="text-center"><button class="btn btn-primary" ng-click="getSearchTweets(zip,query)">Get Tweets</button></p>
 
     </div>
 

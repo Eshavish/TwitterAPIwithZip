@@ -35,11 +35,13 @@ app.use(express.static('public'));
 
 //Get search tweets
 app.post('/twitter/searchTweets', function (req, res) {
+	var zip = req.body.zip;
 	var searchQuery = req.body.query;
-	console.log("Called BLAH");
+	console.log("calling twitter api with query", searchQuery);
+	console.log("calling twitter api with zip", zip);
 
 	//Twitter API is called.
-	var data = twitter.getSearch({'q': searchQuery ,'count': 10}, function(error, response, body){
+	var data = twitter.getSearch({'q': searchQuery ,'count': 10, 'geocode': zip}, function(error, response, body){
 		res.status(404).send({
 			"error" : "Tweets Not Found"
 		});

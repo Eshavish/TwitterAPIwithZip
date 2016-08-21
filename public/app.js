@@ -2,9 +2,10 @@ var app = angular.module('myApp', []);
 
 // This is your controller. In MVC. The C in MVC.
 app.controller('myCtrl', function($scope, TwitterService){
-	$scope.getSearchTweets = function(query){
+	$scope.getSearchTweets = function(zip,query){
 		console.log("Query entered ", query);
-		TwitterService.getSearchTweets(query)
+		console.log("zip code entered", zip);
+		TwitterService.getSearchTweets(zip,query)
 			.then(function(data){
 
 				if(data.error){
@@ -23,10 +24,12 @@ app.controller('myCtrl', function($scope, TwitterService){
 
 app.factory('TwitterService', function($http, $q){
 
-	var getSearchTweets = function(query){
-		console.log("HERE");
+	var getSearchTweets = function(zip,query){
+		console.log("Query: ", query);
+		console.log("Zip: ", zip);
+
 		var d = $q.defer();
-		$http.post('/twitter/searchTweets', {query : query})
+		$http.post('/twitter/searchTweets',{zip : zip, query : query})
 			.success(function(data){
 				return d.resolve(data);
 			})
