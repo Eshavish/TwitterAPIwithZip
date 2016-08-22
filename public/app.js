@@ -4,10 +4,6 @@ var app = angular.module('myApp', []);
 app.controller('myCtrl', function($scope, TwitterService){
 	//$scope is the Modal in MVC.
 	$scope.getSearchTweets = function(zip,query){
-		console.log("Query entered ", query);
-		console.log("zip code entered", zip);
-		zip = "37.781157,-122.398720,1mi";
-
 		TwitterService.getSearchTweets(zip,query)
 			.then(function(data){
 				if(data.error){
@@ -36,7 +32,12 @@ app.controller('myCtrl', function($scope, TwitterService){
 					var errorData = JSON.parse(data.error.data);
 					$scope.twitterErrors = errorData.errors[0].message;
 				} else if (data.result){
-
+					if (data.result.success == false) {
+						$scope.twitterErrors = "Unable to save tweets to flat file";
+					}
+					else {
+						$scope.results = { status: "Successfully saved!" };
+					}
 				}
 			})
 			.catch(function(error){
@@ -48,9 +49,6 @@ app.controller('myCtrl', function($scope, TwitterService){
 app.factory('TwitterService', function($http, $q){
 
 	var saveTweets = function(results){
-		console.log("CALLLING")
-		console.log(results);
-
 		var d = $q.defer();
 		$http.post('/twitter/saveTweets', { results: results })
 			.success(function(data){
@@ -63,9 +61,6 @@ app.factory('TwitterService', function($http, $q){
 	};
 
 	var getSearchTweets = function(zip,query){
-		console.log("Query: ", query);
-		console.log("Zip: ", zip);
-
 		var d = $q.defer();
 		$http.post('/twitter/searchTweets',{zip : zip, query : query})
 			.success(function(data){

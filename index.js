@@ -38,8 +38,6 @@ app.use(express.static('public'));
 app.post('/twitter/searchTweets', function (req, res) {
 	var zip = req.body.zip;
 	var searchQuery = req.body.query;
-	console.log("calling twitter api with query", searchQuery);
-	console.log("calling twitter api with zip", zip);
 
 	//Twitter API is called.
 	var data = twitter.getSearch({'q': searchQuery ,'count': 10, 'geocode': zip}, function(error, response, body){
@@ -62,7 +60,7 @@ app.post('/twitter/saveTweets', function (req, res) {
 	var d = new Date();
 	var fileName = d.getDate()  + "-" + (d.getMonth()+1) + "-" + d.getFullYear() + " " +
 		d.getHours() + d.getMinutes() + d.getSeconds() + ".txt";
-	fs.writeFile("/cygwin64/home/savedtweets/" + fileName, tweets, function(err) {
+	fs.writeFile("/cygwin64/home/tweets/" + fileName, tweets, function(err) {
 		if(err) {
 			res.send({
 				result : {
