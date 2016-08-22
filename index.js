@@ -57,10 +57,15 @@ app.post('/twitter/searchTweets', function (req, res) {
 //Save searched tweets
 app.post('/twitter/saveTweets', function (req, res) {
 	var tweets = req.body.results.extractedTweets;
+	var tweetsFormatted = "" ;
+	//tweets [tweetA, tweetB, tweetC]
+	tweets.forEach(function(tweet){
+		tweetsFormatted += tweet + '\n';
+	});
 	var d = new Date();
 	var fileName = d.getDate()  + "-" + (d.getMonth()+1) + "-" + d.getFullYear() + " " +
 		d.getHours() + d.getMinutes() + d.getSeconds() + ".txt";
-	fs.writeFile("/cygwin64/home/tweets/" + fileName, tweets, function(err) {
+	fs.writeFile("/cygwin64/home/tweets/" + fileName, tweetsFormatted, function(err) {
 		if(err) {
 			res.send({
 				result : {
