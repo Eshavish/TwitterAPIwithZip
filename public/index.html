@@ -18,11 +18,16 @@
     <div class="col-xs-12">
       <input class="form-control" type="text" placeholder="Your zip code here (e.g #92115)" ng-model="zip">
       <input class="form-control" type="text" placeholder="Your search query (e.g #iPhone)" ng-model="query">
+      <input class="form-control" type="text" placeholder="Search locally in flat file here (e.g keyword)" ng-model="keyword">
+
 
       <br>
       <br>
       <p class="text-center"><button class="btn btn-primary" ng-click="getSearchTweets(zip,query)">Get Tweets</button></p>
       <p class="text-center"><button class="btn btn-primary" ng-click="saveTweets(results)">Save Tweets</button></p>
+      <p class="text-center"><button class="btn btn-primary" ng-click="searchLocalTweets(keyword)">Search local Tweets</button></p>
+
+
 
 
     </div>

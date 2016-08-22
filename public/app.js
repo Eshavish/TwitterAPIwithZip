@@ -44,6 +44,22 @@ app.controller('myCtrl', function($scope, TwitterService){
 				console.error('there was an error retrieving data: ', error);
 			})
 	}
+	$scope.searchLocalTweets = function(results){
+		TwitterService.searchLocallyTweets(results)
+			.then(function(data){
+				if(data.error)                        {
+					var errorData = JSON.parse(data.error.data);
+					$scope.twitterErrors = errorData.errors[0].message;
+				} else if (data.result){
+					$scope.twitterErrors = undefined;
+					console.log(data.result);
+					$scope.results = { searchResultsLocally : data.result.searchLocallyTweets }
+				}
+			})
+			.catch(function(error){
+				console.error('there was an error retrieving data: ', error);
+			})
+	}
 });
 
 app.factory('TwitterService', function($http, $q){
@@ -60,6 +76,17 @@ app.factory('TwitterService', function($http, $q){
 		return d.promise;
 	};
 
+	var searchLocallyTweets = function(keyword){
+		var d = $q.defer();
+		$http.post('/twitter/searchLocallyTweets', { keyword : keyword })
+			.success(function(data){
+				return d.resolve(data);
+			})
+			.error(function(error){
+				return d.reject(error);
+			});
+		return d.promise;
+	};
 	var getSearchTweets = function(zip,query){
 		var d = $q.defer();
 		$http.post('/twitter/searchTweets',{zip : zip, query : query})
@@ -73,6 +100,6 @@ app.factory('TwitterService', function($http, $q){
 	};
 
 	return {
-		getSearchTweets : getSearchTweets , saveTweets : saveTweets
+		getSearchTweets : getSearchTweets , saveTweets : saveTweets , searchLocallyTweets : searchLocallyTweets
 	};
 });

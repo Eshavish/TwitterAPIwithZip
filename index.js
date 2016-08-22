@@ -34,6 +34,9 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 
 app.use(express.static('public'));
 
+
+
+
 //Get search tweets
 app.post('/twitter/searchTweets', function (req, res) {
 	var zip = req.body.zip;
@@ -51,6 +54,41 @@ app.post('/twitter/searchTweets', function (req, res) {
 			}
 		});
 	});
+});
+
+app.post('/twitter/searchLocallyTweets', function (req, res) {
+
+	var searchQuery = req.body.keyword;
+	var searchResults = [];
+
+	console.log(searchQuery);
+
+	var files = fs.readdirSync('/cygwin64/home/tweets/');
+	files.forEach(function(file) {
+		file = '/cygwin64/home/tweets/' + file;
+		var contents = fs.readFileSync(file, 'utf-8');
+		var tweets = contents.toString().split("\n");
+			tweets.forEach(function (tweet) {
+				if(tweet.indexOf(searchQuery) > 0) {
+					console.log(tweet);
+					searchResults.push(tweet);
+				}
+			});
+		});
+
+	console.log(searchResults);
+	if (searchResults.length == 0) {
+		res.status(404).send({
+			"error" : "Tweets Not Found"
+		});
+	}
+	else {
+		res.send({
+			result : {
+				"searchLocallyTweets" : searchResults
+			}
+		});
+	}
 });
 
 
