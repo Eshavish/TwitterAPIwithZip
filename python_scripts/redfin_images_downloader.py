@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import requests
 import os
 
-download_path = "CHANGE TO DOWNLOAD PATH FOR IMAGES. E.G. C:\\Houses\\ <- Needs double slash at the end."
+download_path = "C:\cygwin64\home\eshavish\node_modules\twitter-api-node-express\python_scripts\pic\\ <- Needs double slash at the end."
 num_of_img = 1
 soup = ""
 
