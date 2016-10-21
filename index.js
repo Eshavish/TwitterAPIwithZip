@@ -1,15 +1,17 @@
 module.exports = require('./node_modules/twitter-js-client/lib/Twitter');
 
+//var fs = require('fs');
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 
 var error = function (err, response, body) {
-	console.log('ERROR [%s]', JSON.stringify(err));
+    console.log('ERROR [%s]', JSON.stringify(err));
 };
 var success = function (data) {
-	console.log('Data [%s]', data);
+    console.log('Data [%s]', data);
 };
+
 
 var config = {
 	"consumerKey": "0R4GuYAgbwLNsp9dr53WBjZZd",
@@ -18,46 +20,30 @@ var config = {
 	"accessTokenSecret": "QQRxk3wKipwpfjfEBquV9tQ0CW9RU7o11UhM1BbtDfumK"
 };
 
-//Twitter client object is created based on your configurations.
 var twitter = new module.exports.Twitter(config);
 
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
-	extended: true
+  extended: true
 }));
+
 
 /*
  * To connect to a front end app (i.e. AngularJS) store all your files you will *
  * statically store in declared below (i.e. ./public) *
- */
+*/
 
 app.use(express.static('public'));
 
-//post to retrieve user data
-app.post('/twitter/user', function (req, res) {
+
+app.post('/twitter/friendships', function (req, res) {
 	var username = req.body.username;
-
+	var name2 = req.body.name2;
+	//var searchQuery = req.body.username;
+	console.log('just testing');
+	//console.log(zip);
 	//Twitter API is called.
-	var data = twitter.getUser({ screen_name: username}, function(error, response, body){
-		res.status(404).send({
-			"error" : "User Not Found"
-		});
-	}, function(data){
-		res.send({
-			result : {
-				"userData" : data
-			}
-		});
-	});
-});
-
-//Get search tweets
-app.post('/twitter/searchTweets', function (req, res) {
-	var searchQuery = req.body.query;
-	console.log("Called BLAH");
-
-	//Twitter API is called.
-	var data = twitter.getSearch({'q': searchQuery ,'count': 10}, function(error, response, body){
+	var data = twitter.getfriendships({'count': 30,'source_screen_name' : username, 'target_screen_name': name2}, function(error, response, body){
 		res.status(404).send({
 			"error" : "Tweets Not Found"
 		});
@@ -69,8 +55,55 @@ app.post('/twitter/searchTweets', function (req, res) {
 		});
 	});
 });
+//post to retrieve user data
+/*app.post('/twitter/user', function (req, res) {
+	var username = req.body.username;
+	//console.log(username)
+	var data = twitter.getUser({ screen_name: username}, function(error, response, body){
+		res.send({
+			"error" : error
+		});
+	}, function(data){
+		res.send({
+			result : {
+				"userData" : data
+			}
+		});
+	});
+});*/
+/*app.post('/twitter/saveTweets', function (req, res) {
+	var tweets = req.body.results.extractedTweets;
+	//var d = document.getElementsByClassName("dropbtn");
+	//console.log(userData);
+	var tweetsFormatted = "" ;
+	//tweets [tweetA, tweetB, tweetC]
+	tweets.forEach(function(tweet){
+		tweetsFormatted += tweet + '\n';
+	});
+	var d = new Date();
+	var fileName = d.getDate()  + "-" + (d.getMonth()+1) + "-" + d.getFullYear()
+		+ " " + d.getHours() + " " + d.getMinutes() + "'" + d.getSeconds() + "''" +  ".txt";
+	fs.writeFile("/cygwin64/home/tweets/" + fileName,tweetsFormatted, function(err) {
+		if(err) {
+			res.send({
+				result : {
+					"success" : false
+				}
+			});
+		}
+		else {
+			res.send({
+				result : {
+					"success" : true
+				}
+			});
+		}
+	});
+
+});*/
+
 
 var server = app.listen(3000, function () {
-	var host = server.address().address;
-	var port = server.address().port;
+  	var host = server.address().address;
+  	var port = server.address().port;
 });
