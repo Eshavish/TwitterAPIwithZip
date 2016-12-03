@@ -1,12 +1,43 @@
 var app = angular.module('myApp', []);
-
-// This is your controller. In MVC. The C in MVC.
+//var mymap = L.map('mapid').setView([51.505, -0.09], 13);
 app.controller('myCtrl', function($scope, TwitterService){
-	//$scope is the Modal in MVC.
-//copied
-	// copied
-	$scope.getSearchTweets = function(zip,query){
-		TwitterService.getSearchTweets(zip,query)
+	$scope.getfollowers = function(username){
+		//console.log("username entered ", username);
+		TwitterService.getfollowers(username)
+			.then(function(data){
+
+				if(data.error){
+					var errorData = JSON.parse(data.error.data);
+					$scope.twitterErrors = errorData.errors[0].message;
+				} else if (data.result){
+					$scope.twitterErrors = undefined;
+					//console.log
+					/*var getfollowerJSON = JSON.parse(data.result.getfollower);
+					var tweets = []; //Declare an empty array
+					//statuses is an array. Running a for loop here.
+					getfollowerJSON.statuses.forEach(function(status) {
+						tweets.push(status.text);
+
+					});*/
+					//$scope.results = { extractedTweets: tweets }
+					/*var getFollowerDataJSON = JSON.parse(data.result.userData);
+					var tweets=[];
+					getFollowerDataJSON.statuses.forEach(function(status) {
+						tweets.push(status.text);
+					});
+					//console.log(tweets);*/
+					$scope.results ={ userData : data}
+
+				}
+			})
+			.catch(function(error){
+				console.error('there was an error retrieving data: ', error);
+			})
+	};
+
+
+	/*$scope.getSearchTweets = function(zip,username){
+		TwitterService.getSearchTweets(zip,username)
 			.then(function(data){
 				if(data.error){
 					var errorData = JSON.parse(data.error.data);
@@ -25,8 +56,9 @@ app.controller('myCtrl', function($scope, TwitterService){
 			.catch(function(error){
 				console.error('there was an error retrieving data: ', error);
 			})
-	};
+	};*/
 
+	//save tweets
 	$scope.saveTweets = function(results){
 		TwitterService.saveTweets(results)
 			.then(function(data){
@@ -45,33 +77,22 @@ app.controller('myCtrl', function($scope, TwitterService){
 			.catch(function(error){
 				console.error('there was an error retrieving data: ', error);
 			})
-	}
-	$scope.searchLocalTweets = function(results){
-		TwitterService.searchLocallyTweets(results)
-			.then(function(data){
-				if(data.error)                        {
-					var errorData = JSON.parse(data.error.data);
-					$scope.twitterErrors = errorData.errors[0].message;
-				} else if (data.result){
-					$scope.twitterErrors = undefined;
-					console.log(data.result);
-					$scope.results = { localSearchResults : data.result.searchLocallyTweets }
-				}
-			})
-			.catch(function(error){
-				console.error('there was an error retrieving data: ', error);
-			})
-	}
+	};
 });
-
-//TwitterService has all the logic to make calls to backed index.js server code.
+/*L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+	attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+	maxZoom: 18,
+	id: 'your.mapbox.project.id',
+	accessToken: 'your.mapbox.public.access.token'
+}).addTo(mymap);
+*/
 app.factory('TwitterService', function($http, $q){
 
 
-
-	var saveTweets = function(results){
+//starts here
+	var getfollowers = function(username){
 		var d = $q.defer();
-		$http.post('/twitter/saveTweets', { address: address })
+		$http.post('/twitter/followers', {username : username})
 			.success(function(data){
 				return d.resolve(data);
 			})
@@ -79,21 +100,8 @@ app.factory('TwitterService', function($http, $q){
 				return d.reject(error);
 			});
 		return d.promise;
-	};
-
-	var searchLocallyTweets = function(keyword){
-		var d = $q.defer();
-		$http.post('/twitter/searchLocallyTweets', { keyword : keyword })
-			.success(function(data){
-				return d.resolve(data);
-			})
-			.error(function(error){
-				return d.reject(error);
-			});
-		return d.promise;
-	};
-
-	var getSearchTweets = function(zip,query){
+	}
+	/*var getSearchTweets = function(zip,username){
 		var d = $q.defer();
 		var result1;
 		console.log(zip);
@@ -116,10 +124,10 @@ app.factory('TwitterService', function($http, $q){
 			function processRequest() {
 				if (xhr.readyState == 4 && xhr.status == 200) {
 					var response = JSON.parse(xhr.responseText);
-					var miles=20;
+					var miles=5;
 					result1= response.results[0].geometry.location.lat + "," + response.results[0].geometry.location.lng +","+ miles +"mi";
-					console.log(query);
-					$http.post('/twitter/searchTweets',{zip : result1, query : query})
+					//console.log(username);
+					$http.post('/twitter/searchTweets',{zip : result1, username : username})
 						.success(function(data){
 							return d.resolve(data);
 						})
@@ -133,8 +141,35 @@ app.factory('TwitterService', function($http, $q){
 
 
 		return d.promise;
+	};*/
+	//ends here
+
+	/*var getUser = function(username){
+		var d = $q.defer();
+		$http.post('/twitter/user', {username : username})
+			.success(function(data){
+				return d.resolve(data);
+			})
+			.error(function(error){
+				return d.reject(error);
+			});
+		return d.promise;
+	};*/
+	//save tweets
+	var saveTweets = function(results){
+		var d = $q.defer();
+		$http.post('/twitter/saveTweets', { results: results})
+			.success(function(data){
+				return d.resolve(data);
+			})
+			.error(function(error){
+				return d.reject(error);
+			});
+		return d.promise;
 	};
 
+
 	return {
-		getSearchTweets : getSearchTweets , saveTweets : saveTweets , searchLocallyTweets : searchLocallyTweets };
+		getfollowers : getfollowers, saveTweets: saveTweets
+	};
 });

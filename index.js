@@ -6,11 +6,12 @@ var app = express();
 var bodyParser = require('body-parser');
 
 var error = function (err, response, body) {
-	console.log('ERROR [%s]', JSON.stringify(err));
+    console.log('ERROR [%s]', JSON.stringify(err));
 };
 var success = function (data) {
-	console.log('Data [%s]', data);
+    console.log('Data [%s]', data);
 };
+
 
 var config = {
 	"consumerKey": "0R4GuYAgbwLNsp9dr53WBjZZd",
@@ -19,96 +20,127 @@ var config = {
 	"accessTokenSecret": "QQRxk3wKipwpfjfEBquV9tQ0CW9RU7o11UhM1BbtDfumK"
 };
 
-//Twitter client object is created based on your configurations.
 var twitter = new module.exports.Twitter(config);
 
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
-	extended: true
+  extended: true
 }));
+
 
 /*
  * To connect to a front end app (i.e. AngularJS) store all your files you will *
  * statically store in declared below (i.e. ./public) *
- */
+*/
 
 app.use(express.static('public'));
 
 
-
-
-//Get search tweets
-//COPIED
-
-
-//COPIED
-app.post('/twitter/searchTweets', function (req, res) {
-	var zip = req.body.zip;
-	var searchQuery = req.body.query;
+app.post('/twitter/followers', function (req, res) {
+	var username = req.body.username;
+	//var name2 = req.body.name2;
+	//var searchQuery = req.body.username;
 	console.log('just testing');
-	console.log(zip);
+	//console.log(zip);
 	//Twitter API is called.
-	var data = twitter.getSearch({'q': searchQuery ,'count': 10, 'geocode': zip}, function(error, response, body){
+	var data = twitter.getfollowers({'count': 10,'skip_status': true,'screen_name': username}, function(error, response, body){
 		res.status(404).send({
 			"error" : "Tweets Not Found"
 		});
 	}, function(data){
 		res.send({
-			result : {
-				"searchTweetsData" : data
+			result: {
+				"userData" : data
+
 			}
 		});
 	});
 });
 
-app.post('/twitter/searchLocallyTweets', function (req, res) {
 
-	var searchQuery = req.body.keyword;
-	var searchResults = [];
-
-	console.log(searchQuery);
-
-	var files = fs.readdirSync('/cygwin64/home/tweets/');
-	files.forEach(function(file) {
-		file = '/cygwin64/home/tweets/' + file;
-		var contents = fs.readFileSync(file, 'utf-8');
-		var tweets = contents.toString().split("\n");
-			tweets.forEach(function (tweet) {
-				if(tweet.indexOf(searchQuery) > 0) {
-					console.log(tweet);
-					searchResults.push(tweet);
-				}
-			});
+//post to retrieve user data
+/*app.post('/twitter/user', function (req, res) {
+	var username = req.body.username;
+	//console.log(username)
+	var data = twitter.getUser({ screen_name: username}, function(error, response, body){
+		res.send({
+			"error" : error
 		});
-
-	console.log(searchResults);
-	if (searchResults.length == 0) {
-		res.status(404).send({
-			"error" : "Tweets Not Found"
-		});
-	}
-	else {
+	}, function(data){
 		res.send({
 			result : {
-				"searchLocallyTweets" : searchResults
+				"userData" : data
 			}
 		});
-	}
-});
-
-
-//Save searched tweets
-app.post('/twitter/saveTweets', function (req, res) {
-	var tweets = req.body.results.extractedTweets;
-	var tweetsFormatted = "" ;
-	//tweets [tweetA, tweetB, tweetC]
-	tweets.forEach(function(tweet){
-		tweetsFormatted += tweet + '\n';
 	});
+});*/
+app.post('/twitter/saveTweets', function (req, res) {
+	//console.log(tweets);
+	 var tweets = JSON.stringify(req.body.results.userData);
+	//console.log(tweets['userData']);
+	var t = JSON.parse(tweets);
+	var ob= JSON.parse(t.result.userData);
+	var mo = JSON.stringify(ob);
+	var test =JSON.parse(mo);
+	var n =3;
+	//var tweetsFormatted= new Array(n);
+	//var tFormatted = new Array(3);
+	var obj = {};
+	var arr = [];
+	for(i=0;i<=9;i++) {
+		/*tweetsFormatted[0] = test.users[i].id;
+		tweetsFormatted[1] = test.users[i].followers_count;
+		tweetsFormatted[2]= test.users[i].friends_count;*/
+		obj['id']=test.users[i].id;
+		//console.log(obj['id']);
+		obj['followers_count']=test.users[i].followers_count;
+		obj['friends_count']=test.users[i].friends_count;
+		obj['blocking_by']=test.users[i].blocking_by;
+		arr.push(obj);
+		obj = {};
+		/*for(j=0;j<3;j++) {
+			console.log(tweetsFormatted[j]);
+		}*/
+		//tFormatted = tweetsFormatted;
+		//console.log(tFormatted);
+	}
+
+		//console.log(obj.id[1]);
+	console.log(arr);
+	var tweetsForm = JSON.stringify(arr);
+	//console.log(tweets);
+	/*JSONObject root = new JSONObject(tweets);
+	JSONArray usersArray = root.getJSONArray("users");
+	JSONObject firstid = usersArray.getJSONObject(0);
+	int id = firstid.getInt("id");
+	console.log(id);
+	console.log('it reached here');*/
+
+
+	//var firstObj = obj[0]; // get the first (and only) object out of the array
+
+	//var name = firstObj.name; // you can access properties by name like this
+   // alert(name);
+	//var followers_count = firstObj['']; // or like this
+	/*JSONObject jsonObject = new JSONObject(tweets);
+	int name = jsonObject.getInt("name");*/
+	//console.log(name);
+	//console.log(tweets);
+	//console.log(req.body.results.userData);
+	//var d = document.getElementsByClassName("dropbtn");
+	//console.log(userData);
+	//var tweetsFormatted = "" ;
+
+	//tweets [tweetA, tweetB, tweetC]
+	//var tweetsFormatted = "" ;
+	//tweets [tweetA, tweetB, tweetC]
+	/*for (var i = 0; i <=tweets.length ; i++) {
+		tweetsFormatted += tweets[i] + '\n';
+   }*/
 	var d = new Date();
-	var fileName = d.getDate()  + "-" + (d.getMonth()+1) + "-" + d.getFullYear() + " " +
-		d.getHours() + d.getMinutes() + d.getSeconds() + ".txt";
-	fs.writeFile("/cygwin64/home/tweets/" + fileName, tweetsFormatted, function(err) {
+	var fileName = d.getDate()  + "-" + (d.getMonth()+1) + "-" + d.getFullYear()
+		+ " " + d.getHours() + " " + d.getMinutes() + "'" + d.getSeconds() + "''" +  ".txt";
+	fs.writeFile("/cygwin64/home/tweets/" + fileName, tweetsForm, function(err) {
 		if(err) {
 			res.send({
 				result : {
@@ -124,9 +156,12 @@ app.post('/twitter/saveTweets', function (req, res) {
 			});
 		}
 	});
+
+
 });
 
+
 var server = app.listen(3000, function () {
-	var host = server.address().address;
-	var port = server.address().port;
+  	var host = server.address().address;
+  	var port = server.address().port;
 });
