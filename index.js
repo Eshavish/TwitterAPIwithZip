@@ -36,27 +36,45 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 app.use(express.static('public'));
 
 
-app.post('/twitter/followers', function (req, res) {
-	var username = req.body.username;
-	//var name2 = req.body.name2;
-	//var searchQuery = req.body.username;
-	console.log('just testing');
-	//console.log(zip);
+//retweets
+app.post('/twitter/getretweets', function (req, res) {
+	var id = req.body.id;
+
 	//Twitter API is called.
-	var data = twitter.getfollowers({'count': 10,'skip_status': true,'screen_name': username}, function(error, response, body){
+	var data = twitter.getretweets({'id': id, 'count' :10}, function(error, response, body){
 		res.status(404).send({
-			"error" : "Tweets Not Found"
+			"error" : "Retweets Not Found"
 		});
 	}, function(data){
 		res.send({
-			result: {
-				"userData" : data
+			result : {
 
+				"userData" : data
+			}
+		});
+	});
+});
+app.post('/twitter/getblocks', function (req, res) {
+	var username = req.body.username;
+
+	//Twitter API is called.
+	var data = twitter.getblocks({'username': username,'include_entities': false}, function(error, response, body){
+		console.log(response);
+		res.status(404).send({
+			"error" : "blocks Not Found"
+		});
+	}, function(data){
+		console.log(data);
+		res.send({
+			result : {
+				"userData" : data
 			}
 		});
 	});
 });
 
+
+//ends here
 
 //post to retrieve user data
 /*app.post('/twitter/user', function (req, res) {
@@ -95,7 +113,9 @@ app.post('/twitter/saveTweets', function (req, res) {
 		//console.log(obj['id']);
 		obj['followers_count']=test.users[i].followers_count;
 		obj['friends_count']=test.users[i].friends_count;
-		obj['blocking_by']=test.users[i].blocking_by;
+	//	obj['blocking_by']=test.users[i].blocking_by;
+		//obj['blocking_by']=test.users[i].blocking_by;
+
 		arr.push(obj);
 		obj = {};
 		/*for(j=0;j<3;j++) {
