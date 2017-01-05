@@ -26,3 +26,4 @@ This uses [BoyCook's](https://github.com/BoyCook) TwitterJS Client.  [See config
 From the twitter-api-node-express directory:
 
 `node index.js`
+#rMiner
